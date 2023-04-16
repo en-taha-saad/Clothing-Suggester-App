@@ -5,8 +5,7 @@ import com.tahaproject.clothingsuggester.util.Constants
 import okhttp3.*
 import okhttp3.logging.HttpLoggingInterceptor
 
-open class ApiRequest {
-    val gson = Gson()
+class ApiRequest {
     private val logInterceptor = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY
     }
@@ -29,7 +28,7 @@ open class ApiRequest {
             .build()
     }
 
-    private fun getCurrentWeather(lat: String, lon: String, appid: String, callback: Callback) {
+    fun getCurrentWeather(lat: String, lon: String, appid: String, callback: Callback) {
         val request = Request.Builder()
             .url(getUrlBuilder(lat, lon, appid)).build()
         client.newCall(request).enqueue(callback)
