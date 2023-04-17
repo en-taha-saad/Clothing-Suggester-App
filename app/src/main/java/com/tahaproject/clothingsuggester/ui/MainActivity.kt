@@ -17,7 +17,7 @@ import com.tahaproject.clothingsuggester.data.models.requests.Location
 import com.tahaproject.clothingsuggester.data.models.response.WeatherData
 
 
-class MainActivity : AppCompatActivity(), WeatherView {
+class MainActivity : AppCompatActivity(), IWeatherView {
 
     private lateinit var presenter: WeatherPresenter
     private lateinit var apiRequest: ApiRequest
@@ -30,37 +30,43 @@ class MainActivity : AppCompatActivity(), WeatherView {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         apiRequest = ApiRequest()
-        presenter = WeatherPresenterImpl(
+        presenter = WeatherPresenter(
             this,
             WeatherModelImpl(
                 apiRequest, apiKey
             )
         )
-        requestLocation()
-//        (presenter as WeatherPresenterImpl).getCurrentWeatherData(requiredLocation.lat, requiredLocation.lon)
         weatherData = FakeDataGenerator.generateWeatherData()
+//        presenter.getCurrentWeatherData(requiredLocation)
 
+        // Initialize FusedLocationProviderClient for Location Services
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
+        requestLocationPermission()
         // TODO: make the xml
-//        fetchWeatherButton.setOnClickListener {
-//            val location = locationEditText.text.toString()
-//            getCurrentWeather(location)
-//        }
+        // setUp()
     }
 
-    private fun requestLocation() {
+    private fun requestLocationPermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
             != PackageManager.PERMISSION_GRANTED
         ) {
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 100)
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                100
+            )
         } else {
             getCurrentLocation()
         }
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == 100) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -71,6 +77,7 @@ class MainActivity : AppCompatActivity(), WeatherView {
         }
     }
 
+
     private fun getCurrentLocation() {
         if (ActivityCompat.checkSelfPermission(
                 this,
@@ -80,26 +87,14 @@ class MainActivity : AppCompatActivity(), WeatherView {
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
             fusedLocationClient.lastLocation.addOnSuccessListener { location: android.location.Location? ->
                 location?.let {
-                    requiredLocation =
-                        Location(
-                            it.latitude.toString(),
-                            it.longitude.toString()
-                        )
+                    presenter.getCurrentWeatherData(Location(it.latitude.toString(), it.longitude.toString()))
                 } ?: showError("Failed to get location")
             }
             return
         }
     }
-
 
     override fun showCurrentWeatherData(weatherData: WeatherData) {
 //        temperatureTextView.text = "Temperature: ${weatherData.temperature}"

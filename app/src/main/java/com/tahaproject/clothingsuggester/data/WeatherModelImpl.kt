@@ -1,6 +1,7 @@
 package com.tahaproject.clothingsuggester.data
 
 import com.google.gson.Gson
+import com.tahaproject.clothingsuggester.data.models.requests.Location
 import com.tahaproject.clothingsuggester.data.models.response.WeatherData
 import okhttp3.*
 import java.io.IOException
@@ -8,12 +9,11 @@ import java.io.IOException
 class WeatherModelImpl(private val apiRequest: ApiRequest, private val apiKey: String) : WeatherModel {
     val gson = Gson()
     override fun fetchCurrentWeatherData(
-        lat: String,
-        long: String,
+        location: Location,
         callback: (WeatherData) -> Unit,
         errorCallback: (String) -> Unit
     ) {
-        return apiRequest.getCurrentWeather(lat, long, apiKey, object : Callback {
+        return apiRequest.getCurrentWeather(location, apiKey, object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 errorCallback(e.message ?: "Error fetching weather data")
             }

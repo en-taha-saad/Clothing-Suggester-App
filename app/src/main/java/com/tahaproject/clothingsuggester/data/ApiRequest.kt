@@ -1,6 +1,7 @@
 package com.tahaproject.clothingsuggester.data
 
 import com.google.gson.Gson
+import com.tahaproject.clothingsuggester.data.models.requests.Location
 import com.tahaproject.clothingsuggester.util.Constants
 import okhttp3.*
 import okhttp3.logging.HttpLoggingInterceptor
@@ -14,23 +15,23 @@ class ApiRequest {
         .addInterceptor(logInterceptor)
         .build()
 
-    private fun getUrlBuilder(lat: String, lon: String, appid: String): HttpUrl {
+    private fun getUrlBuilder(location: Location, appid: String): HttpUrl {
         return HttpUrl.Builder()
             .scheme(Constants.API_SCHEME)
             .host(Constants.API_HOST)
             .addPathSegment(Constants.API_DATA_SEGMENT)
             .addPathSegment(Constants.API_VERSION_SEGMENT)
             .addPathSegment(Constants.API_FORECAST_SEGMENT)
-            .addQueryParameter("lat", lat)
-            .addQueryParameter("lon", lon)
-            .addQueryParameter("appid", appid)
-            .addQueryParameter("units", Constants.API_DEFAULT_UNITS)
+            .addQueryParameter(Constants.API_LAT, location.lat)
+            .addQueryParameter(Constants.API_LON, location.lon)
+            .addQueryParameter(Constants.API_APPID, appid)
+            .addQueryParameter(Constants.API_UNITS, Constants.API_DEFAULT_UNITS)
             .build()
     }
 
-    fun getCurrentWeather(lat: String, lon: String, appid: String, callback: Callback) {
+    fun getCurrentWeather(location: Location, appid: String, callback: Callback) {
         val request = Request.Builder()
-            .url(getUrlBuilder(lat, lon, appid)).build()
+            .url(getUrlBuilder(location, appid)).build()
         client.newCall(request).enqueue(callback)
     }
 
