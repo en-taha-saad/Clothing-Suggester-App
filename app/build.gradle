@@ -21,7 +21,9 @@ android {
         buildConfigField "String", "apiKey", "${properties.getProperty('apiKey')}"
 
     }
-
+    buildFeatures {
+        viewBinding true
+    }
     buildTypes {
         release {
             minifyEnabled false
