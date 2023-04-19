@@ -6,7 +6,6 @@ import android.content.pm.PackageManager
 import android.location.Geocoder
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
@@ -14,10 +13,8 @@ import androidx.core.content.ContextCompat
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.tahaproject.clothingsuggester.BuildConfig
-import com.tahaproject.clothingsuggester.R
-import com.tahaproject.clothingsuggester.data.ApiRequest
-import com.tahaproject.clothingsuggester.data.FakeDataGenerator
-import com.tahaproject.clothingsuggester.data.WeatherModelImpl
+import com.tahaproject.clothingsuggester.data.remote.ApiRequest
+import com.tahaproject.clothingsuggester.data.remote.WeatherModelImpl
 import com.tahaproject.clothingsuggester.data.models.requests.Location
 import com.tahaproject.clothingsuggester.data.models.response.WeatherData
 import com.tahaproject.clothingsuggester.databinding.ActivityMainBinding
@@ -100,16 +97,16 @@ class MainActivity : AppCompatActivity(), IWeatherView {
     private fun updateUI(weatherData: WeatherData) {
         if (weatherData.forecasts.isEmpty()) {
             binding.progressBar.visibility = View.GONE
-            binding.locationTextView.visibility = View.VISIBLE
-            binding.locationTextView.text = "No weather data available"
+//            binding.locationTextView.visibility = View.VISIBLE
+//            binding.locationTextView.text = "No weather data available"
             showError("No forecasts available")
             return
         }
         val forecast = weatherData.forecasts.first()
         if (forecast.weather.isEmpty()) {
             binding.progressBar.visibility = View.GONE
-            binding.locationTextView.visibility = View.VISIBLE
-            binding.locationTextView.text = "No weather data available"
+//            binding.locationTextView.visibility = View.VISIBLE
+//            binding.locationTextView.text = "No weather data available"
             showError("No weather data available")
             return
         }
@@ -118,8 +115,8 @@ class MainActivity : AppCompatActivity(), IWeatherView {
 
         runOnUiThread {
             binding.progressBar.visibility = View.GONE
-            binding.locationTextView.visibility = View.VISIBLE
-            binding.locationTextView.text = weather.toString()
+//            binding.locationTextView.visibility = View.VISIBLE
+//            binding.locationTextView.text = weather.toString()
         }
     }
 

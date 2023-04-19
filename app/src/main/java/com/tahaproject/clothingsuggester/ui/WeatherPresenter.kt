@@ -1,6 +1,6 @@
 package com.tahaproject.clothingsuggester.ui
 
-import com.tahaproject.clothingsuggester.data.WeatherModel
+import com.tahaproject.clothingsuggester.data.remote.WeatherModel
 import com.tahaproject.clothingsuggester.data.models.requests.Location
 
 class WeatherPresenter(private val view: IWeatherView, private val model: WeatherModel) : IWeatherPresenter {

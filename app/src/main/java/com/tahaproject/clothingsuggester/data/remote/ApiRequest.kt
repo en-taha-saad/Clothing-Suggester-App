@@ -1,6 +1,5 @@
-package com.tahaproject.clothingsuggester.data
+package com.tahaproject.clothingsuggester.data.remote
 
-import com.google.gson.Gson
 import com.tahaproject.clothingsuggester.data.models.requests.Location
 import com.tahaproject.clothingsuggester.util.Constants
 import okhttp3.*

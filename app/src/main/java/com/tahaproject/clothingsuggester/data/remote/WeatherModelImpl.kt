@@ -1,4 +1,4 @@
-package com.tahaproject.clothingsuggester.data
+package com.tahaproject.clothingsuggester.data.remote
 
 import android.util.Log
 import com.google.gson.Gson

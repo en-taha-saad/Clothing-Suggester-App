@@ -1,4 +1,4 @@
-package com.tahaproject.clothingsuggester.data
+package com.tahaproject.clothingsuggester.data.remote.fake
 
 import com.tahaproject.clothingsuggester.data.models.response.*
 import kotlin.random.Random
