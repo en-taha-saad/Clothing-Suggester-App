@@ -7,6 +7,7 @@ import android.location.Geocoder
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -41,7 +42,6 @@ class MainActivity : AppCompatActivity(), IWeatherView {
         apiRequest = ApiRequest()
         weatherModelImpl = WeatherModelImpl(apiRequest, apiKey)
         presenter = WeatherPresenter(this, weatherModelImpl)
-//        weatherData = FakeDataGenerator.generateWeatherData()
 
         // Initialize FusedLocationProviderClient for Location Services
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
@@ -89,38 +89,51 @@ class MainActivity : AppCompatActivity(), IWeatherView {
     private fun getCurrentLocation() {
         fusedLocationClient.lastLocation.addOnSuccessListener { location: android.location.Location? ->
             location?.let {
-                val address = getAddressFromLocation(it.latitude, it.longitude)
+//                val address = getAddressFromLocation(it.latitude, it.longitude)
                 presenter.getCurrentWeatherData(Location(it.latitude.toString(), it.longitude.toString()))
-
-                updateUI(address)
             } ?: showError("Failed to get location")
         }
 
     }
 
-    private fun updateUI(address: String) {
-        Log.i("Tag", address)
-//        binding.locationTextView.text = address
-    }
 
+    private fun updateUI(weatherData: WeatherData) {
+        if (weatherData.forecasts.isEmpty()) {
+            binding.progressBar.visibility = View.GONE
+            binding.locationTextView.visibility = View.VISIBLE
+            binding.locationTextView.text = "No weather data available"
+            showError("No forecasts available")
+            return
+        }
+        val forecast = weatherData.forecasts.first()
+        if (forecast.weather.isEmpty()) {
+            binding.progressBar.visibility = View.GONE
+            binding.locationTextView.visibility = View.VISIBLE
+            binding.locationTextView.text = "No weather data available"
+            showError("No weather data available")
+            return
+        }
+        val weather = forecast.weather.first()
+        val main = forecast.main
 
-    private fun updateUI2(weatherData: WeatherData) {
         runOnUiThread {
-            binding.locationTextView.text = weatherData.forecasts.size.toString()
+            binding.progressBar.visibility = View.GONE
+            binding.locationTextView.visibility = View.VISIBLE
+            binding.locationTextView.text = weather.toString()
         }
     }
 
 
     override fun showCurrentWeatherData(weatherData: WeatherData) {
-        updateUI2(weatherData)
-//        temperatureTextView.text = "Temperature: ${weatherData.temperature}"
-//        descriptionTextView.text = "Description: ${weatherData.description}"
+        updateUI(weatherData)
     }
 
     override fun showError(errorMessage: String) {
         // errorTextView.text = errorMessage
         // make a toast
-        Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show()
+        runOnUiThread {
+            Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show()
+        }
 
     }
 }
