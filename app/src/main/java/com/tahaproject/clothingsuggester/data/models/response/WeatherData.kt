@@ -1,8 +1,10 @@
 package com.tahaproject.clothingsuggester.data.models.response
 
+import com.google.gson.annotations.SerializedName
+
 data class WeatherData(
-    val city: City,
-    val forecasts: List<Forecast>
+    @SerializedName("city") val city: City,
+    @SerializedName("list") val forecasts: List<Forecast>
 )
 
 

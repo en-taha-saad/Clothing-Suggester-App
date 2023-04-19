@@ -1,5 +1,6 @@
 package com.tahaproject.clothingsuggester.data
 
+import android.util.Log
 import com.google.gson.Gson
 import com.tahaproject.clothingsuggester.data.models.requests.Location
 import com.tahaproject.clothingsuggester.data.models.response.WeatherData
@@ -19,7 +20,9 @@ class WeatherModelImpl(private val apiRequest: ApiRequest, private val apiKey: S
             }
 
             override fun onResponse(call: Call, response: Response) {
-                response.body?.string()?.let { responseBody ->
+                val responseJson = response.body?.string()
+                Log.i("WeatherModelImpl", responseJson.toString())
+                responseJson.let { responseBody ->
                     val weatherData = gson.fromJson(responseBody, WeatherData::class.java)
                     weatherData?.let(callback) ?: errorCallback("Error parsing weather data")
                 } ?: errorCallback("Error fetching weather data")
