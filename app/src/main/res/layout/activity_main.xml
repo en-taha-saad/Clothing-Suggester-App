@@ -1,20 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
         xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/background"
+        android:paddingEnd="16dp"
+        android:paddingStart="16dp"
+        android:paddingTop="16dp"
         tools:context=".ui.MainActivity">
+
+    <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/image_view_icon"
+            android:layout_width="108dp"
+            android:layout_height="108dp"
+            android:layout_marginTop="56dp"
+            android:scaleType="centerCrop"
+            app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.ExtraSmall"
+            android:background="@drawable/rounded_imageview"
+            app:layout_constraintEnd_toStartOf="@id/text_view_temperature"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            tools:srcCompat="@tools:sample/avatars"
+            android:contentDescription="@string/todo"/>
+
+
     <TextView
-            android:id="@+id/locationTextView"
+            android:id="@+id/text_view_temperature"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="20sp"
-            android:text="Hello World!"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="18dp"
+            android:includeFontPadding="false"
+            android:textColor="@color/text_primary"
+            android:textSize="38sp"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/image_view_icon"
+            app:layout_constraintTop_toTopOf="@id/image_view_icon"
+            tools:text="64"/>
+
+    <TextView
+            android:id="@+id/text_view_state"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text_secondary"
+            android:textSize="18sp"
+            app:layout_constraintStart_toStartOf="@id/text_view_temperature"
+            app:layout_constraintTop_toBottomOf="@id/text_view_temperature"
+            tools:text="Thunder"/>
+
+    <TextView
+            android:id="@+id/text_view_suggested_outfit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="36dp"
+            android:gravity="center"
+            android:text="@string/suggested_outfit_for_today"
+            android:textColor="@color/text_primary"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/image_view_icon"/>
+
+    <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/image_view_outfit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/text_view_suggested_outfit"
+            app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.ExtraSmall"
+            tools:srcCompat="@tools:sample/backgrounds/scenic"/>
+
+    <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
