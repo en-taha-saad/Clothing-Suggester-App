@@ -4,6 +4,7 @@ import android.content.SharedPreferences
 import com.tahaproject.clothingsuggester.R
 import com.tahaproject.clothingsuggester.data.models.requests.Outfit
 
+/// this only code is ready Code Snippet because of poor time
 class LocalDataImpl(
     private val sharedPreferences: SharedPreferences
 ) : LocalData {

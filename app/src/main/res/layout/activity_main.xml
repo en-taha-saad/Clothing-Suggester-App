@@ -11,6 +11,7 @@
         android:paddingTop="16dp"
         tools:context=".ui.MainActivity">
 
+
     <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/image_view_icon"
             android:layout_width="108dp"
@@ -34,7 +35,7 @@
             android:layout_marginStart="18dp"
             android:includeFontPadding="false"
             android:textColor="@color/text_primary"
-            android:textSize="38sp"
+            android:textSize="24sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/image_view_icon"
             app:layout_constraintTop_toTopOf="@id/image_view_icon"

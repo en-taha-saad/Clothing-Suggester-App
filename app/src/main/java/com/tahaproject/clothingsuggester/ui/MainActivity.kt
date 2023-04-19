@@ -6,16 +6,21 @@ import android.content.pm.PackageManager
 import android.location.Geocoder
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.bumptech.glide.Glide
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.tahaproject.clothingsuggester.BuildConfig
+import com.tahaproject.clothingsuggester.data.local.LocalDataImpl
 import com.tahaproject.clothingsuggester.data.remote.ApiRequest
 import com.tahaproject.clothingsuggester.data.remote.WeatherModelImpl
 import com.tahaproject.clothingsuggester.data.models.requests.Location
+import com.tahaproject.clothingsuggester.data.models.requests.Outfit
 import com.tahaproject.clothingsuggester.data.models.response.WeatherData
 import com.tahaproject.clothingsuggester.databinding.ActivityMainBinding
 import java.util.*
@@ -23,12 +28,12 @@ import java.util.*
 
 class MainActivity : AppCompatActivity(), IWeatherView {
     private lateinit var binding: ActivityMainBinding
-    private lateinit var presenter: WeatherPresenter
-    private lateinit var apiRequest: ApiRequest
-    private lateinit var weatherModelImpl: WeatherModelImpl
-
-    private lateinit var requiredLocation: Location
     private val apiKey = BuildConfig.apiKey
+    private val apiRequest by lazy { ApiRequest() }
+    private val weatherModelImpl by lazy { WeatherModelImpl(apiRequest, apiKey) }
+    private val sharedPref by lazy { getSharedPreferences("ClothesSuggesterSharedPref", MODE_PRIVATE) }
+    private val localDataImpl by lazy { LocalDataImpl(sharedPref) }
+    private val presenter by lazy { WeatherPresenter(this, weatherModelImpl, localDataImpl) }
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
 
@@ -36,9 +41,6 @@ class MainActivity : AppCompatActivity(), IWeatherView {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        apiRequest = ApiRequest()
-        weatherModelImpl = WeatherModelImpl(apiRequest, apiKey)
-        presenter = WeatherPresenter(this, weatherModelImpl)
 
         // Initialize FusedLocationProviderClient for Location Services
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
@@ -120,17 +122,52 @@ class MainActivity : AppCompatActivity(), IWeatherView {
         }
     }
 
+    private fun ImageView.loadImageFromUrl(url: String) {
+        Glide.with(this)
+            .load(url)
+            .into(this)
+    }
 
     override fun showCurrentWeatherData(weatherData: WeatherData) {
+        val forecast = weatherData.forecasts.first()
+
+        runOnUiThread {
+            binding.apply {
+                textViewTemperature.text =
+                    "${forecast.main.tempMin.toInt()} °C/ ${forecast.main.tempMax.toInt()} °C"
+                textViewState.text = forecast.weather.first().description
+                imageViewIcon.loadImageFromUrl("https://openweathermap.org/img/wn/" + forecast.weather.first().icon + ".png")
+            }
+
+        }
+
         updateUI(weatherData)
     }
 
     override fun showError(errorMessage: String) {
-        // errorTextView.text = errorMessage
-        // make a toast
         runOnUiThread {
             Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show()
         }
 
     }
+
+    override fun showSuggestedOutfit(outfit: Outfit) {
+        Log.i("Outfit", outfit.toString())
+        runOnUiThread {
+            binding.imageViewOutfit.setImageResource(outfit.imageResource)
+        }
+    }
+
+    override fun showLoading() {
+        runOnUiThread {
+            binding.progressBar.visibility = View.VISIBLE
+        }
+    }
+
+    override fun hideLoading() {
+        runOnUiThread {
+            binding.progressBar.visibility = View.GONE
+        }
+    }
+
 }
